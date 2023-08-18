@@ -59,15 +59,15 @@ const GameBoard = (function () {
     }
 })();
 
-const Player = (marker) => {
-    return {marker};
+const Player = (name, marker) => {
+    return {name, marker};
 };
 
 const DisplayController = (function () {
     let activePlayer;
 
-    const player1 = Player('x');
-    const player2 = Player('o');
+    let player1;
+    let player2;
 
     const _switchActivePlayer = function() {
         activePlayer = activePlayer === player1 ? player2 : player1;
@@ -85,7 +85,7 @@ const DisplayController = (function () {
             restartBtn.parentNode.removeChild(restartBtn);
         })
         if (GameBoard.isWon()) {
-            display.textContent = `${activePlayer === player1 ? 'player 2' : 'player 1'} wins!`;
+            display.textContent = `${activePlayer === player1 ? player2.name : player1.name} wins!`;
             restart.appendChild(restartBtn);  
             return true;
         } else if (GameBoard.isFull()) {
@@ -93,7 +93,7 @@ const DisplayController = (function () {
             restart.appendChild(restartBtn);
             return true;
         } else {
-            display.textContent = `It's ${activePlayer === player1 ? 'player 1' : 'player 2'}'s turn!`;
+            display.textContent = `It's ${activePlayer === player1 ? player1.name : player2.name}'s turn!`;
             return false;
         }
     }
@@ -106,6 +106,12 @@ const DisplayController = (function () {
     }
 
     const playRound = function() {
+        player1Name = setUpDisplay.querySelector('input#player-1-name').value === '' ? 'player 1' : setUpDisplay.querySelector('input#player-1-name').value;
+        player2Name = setUpDisplay.querySelector('input#player-2-name').value === '' ? 'player 2' : setUpDisplay.querySelector('input#player-2-name').value;
+        
+        player1 = Player(player1Name, 'x');
+        player2 = Player(player2Name, 'o');
+
         setUpDisplay.style.display = 'none';
         gameBoardContainer.textContent = '';
         GameBoard.renderBoard();
