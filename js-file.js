@@ -106,8 +106,8 @@ const DisplayController = (function () {
     }
 
     const playRound = function() {
-        player1Name = setUpDisplay.querySelector('input#player-1-name').value === '' ? 'player 1' : setUpDisplay.querySelector('input#player-1-name').value;
-        player2Name = setUpDisplay.querySelector('input#player-2-name').value === '' ? 'player 2' : setUpDisplay.querySelector('input#player-2-name').value;
+        player1Name = setUpDisplay.querySelector('input#player-1-name').value.trim() === '' ? 'player 1' : setUpDisplay.querySelector('input#player-1-name').value.trim();
+        player2Name = setUpDisplay.querySelector('input#player-2-name').value.trim() === '' ? 'player 2' : setUpDisplay.querySelector('input#player-2-name').value.trim();
         
         player1 = Player(player1Name, 'x');
         player2 = Player(player2Name, 'o');
