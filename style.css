@@ -1,11 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Roboto+Slab:wght@100;200;300;400;500&family=Roboto:wght@100;300;700&display=swap');
+
+/*
+font-family: 'Fredoka', sans-serif;
+font-family: 'Playfair Display', serif;
+font-family: 'Roboto', sans-serif;
+*/
+
+body {
+    display: grid;
+    justify-content: center;
+    justify-items: center;
+}
+
+button {
+    height: 2.5rem;
+    background-color: black;
+    color: white;
+    border: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+body>h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+}
+
+.game-setup {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 20px;
+}
+
+.game-setup {
+    text-align: center;
+}
+
+.game-setup h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 5rem;
+}
+
+.game-setup label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+}
+
+.game-setup input {
+    height: 2rem;
+    border: 1px black solid;
+    padding: 0 10px;
+    font-size: 1rem;
+}
+
+
+
+.game-setup>.player-setup {
+    display: grid;
+}
+
+.game-setup>button {
+    grid-column: span 2;
+}
+
 .game-board {
     display: grid;
-    grid-template-columns: 50px 50px 50px;
-    grid-template-rows: 50px 50px 50px;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
 }
 
 .box {
     border: 1px black solid;
     margin-right: -1px;
     margin-top: -1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 4rem;
+    font-weight: 500;
+}
+
+.player-display {
+    padding: 1rem 5rem;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 200;
+    font-size: 1.25rem;
+}
+
+.restart {
+    justify-self: center;
+    align-content: center;
+}
+
+.restart button {
+    width: 300px;
 }
