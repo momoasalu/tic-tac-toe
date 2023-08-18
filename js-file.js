@@ -1,10 +1,18 @@
 const gameBoardContainer = document.querySelector('div.game-board');
 const display = document.querySelector('div.player-display');
+const setUpDisplay = document.querySelector('div.game-setup');
+const restart = document.querySelector('div.restart')
 
 const GameBoard = (function () {
-    const board = [null, null, null, 
+    let board = [null, null, null, 
                     null, null, null, 
                     null, null, null];
+    
+    const resetBoard = function() {
+        board = [null, null, null, 
+            null, null, null, 
+            null, null, null];
+    }
 
     const renderBoard = function() {
         let index = 0;
@@ -46,7 +54,8 @@ const GameBoard = (function () {
         renderBoard: renderBoard,
         isFull: isFull,
         isWon: isWon,
-        placeMarker: placeMarker
+        placeMarker: placeMarker,
+        resetBoard: resetBoard,
     }
 })();
 
@@ -65,11 +74,23 @@ const DisplayController = (function () {
     }
 
     const _checkIfOver = function() {
+        const restartBtn = document.createElement('button');
+        restartBtn.textContent = 'restart';
+        restartBtn.classList.add('restart');
+        restartBtn.addEventListener('click', () => {
+            gameBoardContainer.textContent = '';
+            GameBoard.resetBoard();
+            setUpDisplay.style.display = '';
+            display.textContent = '';
+            restartBtn.parentNode.removeChild(restartBtn);
+        })
         if (GameBoard.isWon()) {
             display.textContent = `${activePlayer === player1 ? 'player 2' : 'player 1'} wins!`;
+            restart.appendChild(restartBtn);  
             return true;
         } else if (GameBoard.isFull()) {
             display.textContent = 'It\'s a tie!';
+            restart.appendChild(restartBtn);
             return true;
         } else {
             display.textContent = `It's ${activePlayer === player1 ? 'player 1' : 'player 2'}'s turn!`;
@@ -79,13 +100,13 @@ const DisplayController = (function () {
 
     const _endGame = function() {
         const boxes = gameBoardContainer.querySelectorAll('.box');
-        console.log(boxes)
         Array.from(boxes).forEach(box => {
             box.classList.add('disabled')
         });
     }
 
     const playRound = function() {
+        setUpDisplay.style.display = 'none';
         gameBoardContainer.textContent = '';
         GameBoard.renderBoard();
 
@@ -93,7 +114,6 @@ const DisplayController = (function () {
         _checkIfOver();
         
         const boxes = gameBoardContainer.querySelectorAll('.box');
-        console.log(boxes)
         Array.from(boxes).forEach(box => {
             box.addEventListener('click', () => {
                 if (!box.classList.contains('disabled') && box.textContent === '') {
