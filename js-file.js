@@ -66,12 +66,23 @@ const DisplayController = (function () {
 
     const _checkIfOver = function() {
         if (GameBoard.isWon()) {
-            display.textContent = `${activePlayer === player1 ? 'player 2' : 'player 1'} wins!`
+            display.textContent = `${activePlayer === player1 ? 'player 2' : 'player 1'} wins!`;
+            return true;
         } else if (GameBoard.isFull()) {
-            display.textContent = 'It\'s a tie!'
+            display.textContent = 'It\'s a tie!';
+            return true;
         } else {
-            display.textContent = `It's ${activePlayer === player1 ? 'player 1' : 'player 2'}'s turn!`
+            display.textContent = `It's ${activePlayer === player1 ? 'player 1' : 'player 2'}'s turn!`;
+            return false;
         }
+    }
+
+    const _endGame = function() {
+        const boxes = gameBoardContainer.querySelectorAll('.box');
+        console.log(boxes)
+        Array.from(boxes).forEach(box => {
+            box.classList.add('disabled')
+        });
     }
 
     const playRound = function() {
@@ -85,9 +96,13 @@ const DisplayController = (function () {
         console.log(boxes)
         Array.from(boxes).forEach(box => {
             box.addEventListener('click', () => {
-                GameBoard.placeMarker(activePlayer.marker, box.getAttribute('data-index'));
-                _switchActivePlayer();
-                _checkIfOver();
+                if (!box.classList.contains('disabled') && box.textContent === '') {
+                    GameBoard.placeMarker(activePlayer.marker, box.getAttribute('data-index'));
+                    _switchActivePlayer();
+                    if (_checkIfOver()) {
+                        _endGame();
+                    }
+                }
             })
         });
     }
