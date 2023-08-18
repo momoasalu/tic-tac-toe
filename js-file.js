@@ -1,4 +1,5 @@
 const gameBoardContainer = document.querySelector('div.game-board');
+const display = document.querySelector('div.player-display');
 
 const GameBoard = (function () {
     const board = [null, null, null, 
@@ -59,12 +60,18 @@ const DisplayController = (function () {
     const player1 = Player('x');
     const player2 = Player('o');
 
-    const switchActivePlayer = function() {
+    const _switchActivePlayer = function() {
         activePlayer = activePlayer === player1 ? player2 : player1;
     }
 
-    const checkIfOver = function() {
-        
+    const _checkIfOver = function() {
+        if (GameBoard.isWon()) {
+            display.textContent = `${activePlayer === player1 ? 'player 2' : 'player 1'} wins!`
+        } else if (GameBoard.isFull()) {
+            display.textContent = 'It\'s a tie!'
+        } else {
+            display.textContent = `It's ${activePlayer === player1 ? 'player 1' : 'player 2'}'s turn!`
+        }
     }
 
     const playRound = function() {
@@ -72,21 +79,26 @@ const DisplayController = (function () {
         GameBoard.renderBoard();
 
         activePlayer = player1.marker === 'x' ? player1 : player2;
+        _checkIfOver();
         
         const boxes = gameBoardContainer.querySelectorAll('.box');
         console.log(boxes)
         Array.from(boxes).forEach(box => {
             box.addEventListener('click', () => {
                 GameBoard.placeMarker(activePlayer.marker, box.getAttribute('data-index'));
-                switchActivePlayer();
-                checkIfOver();
+                _switchActivePlayer();
+                _checkIfOver();
             })
         });
-
-
     }
 
     return {
         playRound: playRound
     }
 })();
+
+const startBtn = document.querySelector('button.start-game');
+
+startBtn.addEventListener('click', () => {
+    DisplayController.playRound();
+})
