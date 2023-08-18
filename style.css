@@ -17,7 +17,7 @@ button {
     background-color: black;
     color: white;
     border: none;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto Slab', serif;
     font-size: 1rem;
     cursor: pointer;
 }
@@ -43,18 +43,19 @@ body>h1 {
 }
 
 .game-setup label {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 300;
     font-size: 1.25rem;
 }
 
 .game-setup input {
+    font-family: 'Roboto Slab', serif;
+    font-weight: 200;
     height: 2rem;
     border: 1px black solid;
     padding: 0 10px;
     font-size: 1rem;
 }
-
-
 
 .game-setup>.player-setup {
     display: grid;
