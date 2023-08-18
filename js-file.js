@@ -1,9 +1,9 @@
 const gameBoardContainer = document.querySelector('div.game-board');
 
 const GameBoard = (function () {
-    const board = [null, 'x', 'o', 
-                    'x', 'o', 'o', 
-                    'o', 'x', 'o'];
+    const board = [null, null, null, 
+                    null, null, null, 
+                    null, null, null];
 
     const renderBoard = function() {
         let index = 0;
@@ -49,11 +49,44 @@ const GameBoard = (function () {
     }
 })();
 
-const DisplayController = (function () {
-
-})();
-
-const Player = (name, marker) => {
-    const nextToPlay = false;
-    return {name, marker, nextToPlay};
+const Player = (marker) => {
+    return {marker};
 };
+
+const DisplayController = (function () {
+    let activePlayer;
+
+    const player1 = Player('x');
+    const player2 = Player('o');
+
+    const switchActivePlayer = function() {
+        activePlayer = activePlayer === player1 ? player2 : player1;
+    }
+
+    const checkIfOver = function() {
+        
+    }
+
+    const playRound = function() {
+        gameBoardContainer.textContent = '';
+        GameBoard.renderBoard();
+
+        activePlayer = player1.marker === 'x' ? player1 : player2;
+        
+        const boxes = gameBoardContainer.querySelectorAll('.box');
+        console.log(boxes)
+        Array.from(boxes).forEach(box => {
+            box.addEventListener('click', () => {
+                GameBoard.placeMarker(activePlayer.marker, box.getAttribute('data-index'));
+                switchActivePlayer();
+                checkIfOver();
+            })
+        });
+
+
+    }
+
+    return {
+        playRound: playRound
+    }
+})();
