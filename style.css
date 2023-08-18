@@ -65,15 +65,20 @@ body>h1 {
 }
 
 .game-board {
-    display: grid;
-    grid-template-columns: repeat(3, 100px);
-    grid-template-rows: repeat(3, 100px);
+    width: 300px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.box {
+button.box {
+    cursor: auto;
     border: 1px black solid;
+    background-color: white;
+    color: black;
+    height: 100px;
+    width: 100px;
     margin-right: -1px;
-    margin-top: -1px;
+    margin-top: -5px;
     display: flex;
     justify-content: center;
     align-items: center;

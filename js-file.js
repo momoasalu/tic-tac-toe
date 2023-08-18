@@ -17,14 +17,14 @@ const GameBoard = (function () {
     const renderBoard = function() {
         let index = 0;
         board.forEach(marker => {
-            const box = document.createElement('div');
+            const box = document.createElement('button');
             box.setAttribute('data-index', index);
             ++index;
             box.classList.add('box');
             if (marker === 'x') {
-                box.textContent = 'x';
+                box.value = 'x';
             } else if (marker === 'o') {
-                box.textContent = 'o';
+                box.value = 'o';
             }
             gameBoardContainer.appendChild(box);
         });
@@ -45,7 +45,7 @@ const GameBoard = (function () {
     const placeMarker = function(marker, index) {
         if (!board[index]){
             board[index] = marker;
-            box = document.querySelector(`div.box[data-index="${index}"]`);
+            box = document.querySelector(`button.box[data-index="${index}"]`);
             box.textContent = marker;
         }
     }
