@@ -103,3 +103,20 @@ button.box {
 .restart button {
     width: 300px;
 }
+
+.player-setup div.player-type {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.player-setup button {
+    margin-top: 30px;
+    border: 1px black solid;
+    background-color: white;
+    color: black;
+}
+
+.player-setup button.selected {
+    outline: 3px solid black;
+}

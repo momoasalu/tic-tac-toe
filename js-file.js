@@ -174,8 +174,8 @@ const DisplayController = (function () {
         player1Name = setUpDisplay.querySelector('input#player-1-name').value.trim() === '' ? 'player 1' : setUpDisplay.querySelector('input#player-1-name').value.trim();
         player2Name = setUpDisplay.querySelector('input#player-2-name').value.trim() === '' ? 'player 2' : setUpDisplay.querySelector('input#player-2-name').value.trim();
         
-        player1 = Player(player1Name, 'x', true);
-        player2 = Player(player2Name, 'o', false);
+        player1 = Player(player1Name, 'x', player1ComputerBtn.classList.contains('selected'));
+        player2 = Player(player2Name, 'o', player2ComputerBtn.classList.contains('selected'));
 
         setUpDisplay.style.display = 'none';
         gameBoardContainer.textContent = '';
@@ -207,4 +207,30 @@ const startBtn = document.querySelector('button.start-game');
 
 startBtn.addEventListener('click', () => {
     DisplayController.playRound();
+})
+
+const player1HumanBtn = document.querySelector('button.player-1-human');
+const player1ComputerBtn = document.querySelector('button.player-1-computer');
+
+player1HumanBtn.addEventListener('click', () => {
+    player1HumanBtn.classList.add('selected');
+    player1ComputerBtn.classList.remove('selected')
+})
+
+player1ComputerBtn.addEventListener('click', () => {
+    player1ComputerBtn.classList.add('selected');
+    player1HumanBtn.classList.remove('selected')
+})
+
+const player2HumanBtn = document.querySelector('button.player-2-human');
+const player2ComputerBtn = document.querySelector('button.player-2-computer');
+
+player2HumanBtn.addEventListener('click', () => {
+    player2HumanBtn.classList.add('selected');
+    player2ComputerBtn.classList.remove('selected')
+})
+
+player2ComputerBtn.addEventListener('click', () => {
+    player2ComputerBtn.classList.add('selected');
+    player2HumanBtn.classList.remove('selected')
 })
