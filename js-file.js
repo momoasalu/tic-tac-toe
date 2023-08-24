@@ -26,9 +26,9 @@ const GameBoard = (function () {
             ++index;
             box.classList.add('box');
             if (marker === 'x') {
-                box.value = 'x';
+                box.textContent = 'x';
             } else if (marker === 'o') {
-                box.value = 'o';
+                box.textContent = 'o';
             }
             gameBoardContainer.appendChild(box);
         });
