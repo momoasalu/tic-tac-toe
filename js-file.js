@@ -7,6 +7,10 @@ const GameBoard = (function () {
     let board = [null, null, null, 
                     null, null, null, 
                     null, null, null];
+
+    const boardState = function() {
+        return board.map((box) => box);
+    }
     
     const resetBoard = function() {
         board = [null, null, null, 
@@ -30,18 +34,6 @@ const GameBoard = (function () {
         });
     }
 
-    const isFull = function() {
-        return !board.includes(null);
-    }
-
-    const isWon = function() {
-        return ((board[0] === 'x' || board[0] === 'o') && 
-        ((board[0] === board[1] && board[0] === board[2]) || (board[0] === board[3] && board[0] === board[6]) || (board[0] === board[4] && board[0] === board[8]))) ||
-        ((board[2] === 'x' || board[2] === 'o') && ((board[2] === board[4] && board[2] === board[6]) || (board[2] === board[5] && board[2] === board[8]))) ||
-        ((board[4] === 'x' || board[4] === 'o') && ((board[4] === board[3] && board[4] === board[5]) || (board[4] === board[1] && board[4] === board[7]))) ||
-        ((board[7] === 'x' || board[7] === 'o') && (board[7] === board[6] && board[7] === board[8]));
-    }
-
     const placeMarker = function(marker, index) {
         if (!board[index]){
             board[index] = marker;
@@ -52,15 +44,14 @@ const GameBoard = (function () {
 
     return {
         renderBoard: renderBoard,
-        isFull: isFull,
-        isWon: isWon,
         placeMarker: placeMarker,
         resetBoard: resetBoard,
+        boardState: boardState,
     }
 })();
 
-const Player = (name, marker) => {
-    return {name, marker};
+const Player = (name, marker, isComputer) => {
+    return {name, marker, isComputer};
 };
 
 const DisplayController = (function () {
@@ -71,6 +62,18 @@ const DisplayController = (function () {
 
     const _switchActivePlayer = function() {
         activePlayer = activePlayer === player1 ? player2 : player1;
+    }
+
+    const _isFull = function(board) {
+        return !board.includes(null);
+    }
+
+    const _isWon = function(board) {
+        return ((board[0] === 'x' || board[0] === 'o') && 
+        ((board[0] === board[1] && board[0] === board[2]) || (board[0] === board[3] && board[0] === board[6]) || (board[0] === board[4] && board[0] === board[8]))) ||
+        ((board[2] === 'x' || board[2] === 'o') && ((board[2] === board[4] && board[2] === board[6]) || (board[2] === board[5] && board[2] === board[8]))) ||
+        ((board[4] === 'x' || board[4] === 'o') && ((board[4] === board[3] && board[4] === board[5]) || (board[4] === board[1] && board[4] === board[7]))) ||
+        ((board[7] === 'x' || board[7] === 'o') && (board[7] === board[6] && board[7] === board[8]));
     }
 
     const _checkIfOver = function() {
@@ -84,16 +87,24 @@ const DisplayController = (function () {
             display.textContent = '';
             restartBtn.parentNode.removeChild(restartBtn);
         })
-        if (GameBoard.isWon()) {
+        if (_isWon(GameBoard.boardState())) {
             display.textContent = `${activePlayer === player1 ? player2.name : player1.name} wins!`;
             restart.appendChild(restartBtn);  
             return true;
-        } else if (GameBoard.isFull()) {
+        } else if (_isFull(GameBoard.boardState())) {
             display.textContent = 'It\'s a tie!';
             restart.appendChild(restartBtn);
             return true;
         } else {
             display.textContent = `It's ${activePlayer === player1 ? player1.name : player2.name}'s turn!`;
+            if (activePlayer.isComputer) {
+                _aiPlayTurn(activePlayer);
+                _switchActivePlayer();
+                if (_checkIfOver()) {
+                    _endGame();
+                    return;
+                }
+            }
             return false;
         }
     }
@@ -105,12 +116,66 @@ const DisplayController = (function () {
         });
     }
 
+    let choice;
+
+    const _aiPlayTurn = function(player) {
+        const boardState = GameBoard.boardState();
+        minimax(player, boardState, 0);
+        GameBoard.placeMarker(player.marker, choice);
+    }
+
+    const _getScore = function(player, board, depth) {
+        if (_isWon(board)) {
+            return player.marker === activePlayer.marker ? -10 + depth : 10 - depth;
+        } else {
+            return 0;
+        }
+    }
+
+    const _getPossibleMoves = function(board) {
+        let moves = [];
+        let i = 0;
+        board.forEach((box) => {
+            if (box === null) {
+                moves.push(i);
+            }
+            i++;
+        })
+        return moves;
+    }
+
+    const minimax = function(player, board, depth) {
+        if (_isWon(board) || _isFull(board)) {
+            return _getScore(player, board, depth);
+        }
+
+        let scores = [];
+        let moves = _getPossibleMoves(board);
+
+        const otherPlayer = player === player1 ? player2 : player1;
+        let newBoard = board.map((box) => box);
+
+        moves.forEach((moveIndex) => {
+            newBoard = board.map((box) => box);
+            newBoard[moveIndex] = player.marker;
+            scores.push(minimax(otherPlayer, newBoard, depth + 1));
+        });
+
+        if (player === activePlayer) {
+            choice = moves[scores.indexOf(Math.max(...scores))]
+            return Math.max(...scores);
+        } else {
+            choice = moves[scores.indexOf(Math.min(...scores))]
+            return Math.min(...scores);
+        }
+    }
+
     const playRound = function() {
         player1Name = setUpDisplay.querySelector('input#player-1-name').value.trim() === '' ? 'player 1' : setUpDisplay.querySelector('input#player-1-name').value.trim();
         player2Name = setUpDisplay.querySelector('input#player-2-name').value.trim() === '' ? 'player 2' : setUpDisplay.querySelector('input#player-2-name').value.trim();
         
-        player1 = Player(player1Name, 'x');
-        player2 = Player(player2Name, 'o');
+        player1 = Player(player1Name, 'x', true);
+        player2 = Player(player2Name, 'o', false);
 
         setUpDisplay.style.display = 'none';
         gameBoardContainer.textContent = '';
